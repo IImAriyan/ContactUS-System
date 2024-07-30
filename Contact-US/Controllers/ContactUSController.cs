@@ -1,6 +1,7 @@
 using Contact_US.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Contact_US.Controllers
@@ -32,6 +33,18 @@ namespace Contact_US.Controllers
             };
             return Ok(messageResponse);
         }
-        
+
+
+        [HttpGet("ContactUS/Remove/{id}")]
+        public async Task<ActionResult<contactUsEntity>> removeMessage(int id)
+        {
+            contactUsEntity message = await dbContext.ContactUS.FirstOrDefaultAsync(x =>  x.Id == id);
+            if (message == null) return NotFound();
+
+            dbContext.ContactUS.Remove(message);
+            dbContext.SaveChangesAsync();
+
+            return Ok(message);
+        }
     }
 }
